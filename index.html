@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<style type="text/css">
+			body, html {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+		<script type="text/javascript" src="Page.js"></script> 
+		<script type="text/javascript" src="Entity.js"></script> 
+		<script type="text/javascript" src="Input.js"></script> 
+		<script type="text/javascript" src="Clonehood.js"></script> 
+		<script type="text/javascript" src="allbros.js"></script> 
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+		<script type="text/javascript">
+			
+			const time = (1000 * 60 * 60 * 2);
+			//const time = (1000 * 10);
+
+			function bump(brothername) {
+				var rect;
+				var bro;
+				bros.forEach(guy => {
+					if (guy.broname === brothername) {
+						rect = guy.rect;
+						bro = guy;
+						return;
+					}	
+				});
+				if (!bro.bumped) {
+					var d = new Date();
+					var secs = d.getTime();
+					document.getElementById("bell").pause();
+					document.getElementById("bell").currentTime = 0;
+					document.getElementById("bell").play();
+					var highlight = new Entity(rect.x, rect.y, rect.width, rect.height);
+					highlight.draw = function(page) {
+						page.ctx.fillStyle = "rgb(255, 255, 255, 0.5)";
+						page.ctx.fillRect(this.x, this.y, this.width, this.height);
+					}
+
+					highlight.update = function(page) {
+						d = new Date();
+						var secs = d.getTime();
+						if ((secs - this.time) >= time) {
+							var index = highlights.objects.findIndex(x => x.x ==this.x);
+							bro.bumped = false;
+							highlights.destroy(index);
+						}
+					}
+
+					highlights.add(highlight);
+					highlight.time = secs;
+					console.log(highlight.time);
+					bro.bumped = true;
+				}
+			}
+
+			document.addEventListener("DOMContentLoaded", function() {
+				var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+				var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+				var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+				document.getElementById("canvas").width = w*.99;
+				document.getElementById("canvas").height = h*.99;
+				page = new Page(document.getElementById("canvas"));
+				page.ctx.imageSmoothingEnabled = false;
+
+				composite = new Entity(0, 0, 1000, 1000);
+				composite.width = page.canvas.width;
+				composite.height = page.canvas.height;
+				composite.img = new Image();
+				composite.img.src = "composite.jpg";
+				composite.draw = function(page) {
+					page.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+				};
+				page.add(composite);
+
+				highlights = new Clonehood();
+				page.add(highlights);
+
+				d = new Date();
+				lasttime = d.getTime();
+
+				page.start();
+				
+				socket.on('bump', function(msg) {
+					bump(msg.name);
+				});
+
+			});
+
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas">
+			this requires JavaScript :(
+		</canvas>
+		<audio src="Call-bell-ding.mp3" hidden="hidden" id="bell" />
+	</body>
+</html>
