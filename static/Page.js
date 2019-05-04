@@ -83,7 +83,8 @@ function Page(canvas) {
 				this.objects[i].draw(this);
 			}
 			catch (e) {
-				console.error(e);
+				//console.error(e);
+				console.log(e);
 			}
 		}
 		this.frames++;

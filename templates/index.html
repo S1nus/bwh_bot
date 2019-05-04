@@ -9,11 +9,11 @@
 				height: 100%;
 			}
 		</style>
-		<script type="text/javascript" src="Page.js"></script> 
-		<script type="text/javascript" src="Entity.js"></script> 
-		<script type="text/javascript" src="Input.js"></script> 
-		<script type="text/javascript" src="Clonehood.js"></script> 
-		<script type="text/javascript" src="allbros.js"></script> 
+		<script type="text/javascript" src="static/Page.js"></script> 
+		<script type="text/javascript" src="static/Entity.js"></script> 
+		<script type="text/javascript" src="static/Input.js"></script> 
+		<script type="text/javascript" src="static/Clonehood.js"></script> 
+		<script type="text/javascript" src="static/allbros.js"></script> 
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
 		<script type="text/javascript">
 			
@@ -72,7 +72,7 @@
 				composite.width = page.canvas.width;
 				composite.height = page.canvas.height;
 				composite.img = new Image();
-				composite.img.src = "composite.jpg";
+				composite.img.src = "static/composite.jpg";
 				composite.draw = function(page) {
 					page.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 				};
@@ -98,6 +98,6 @@
 		<canvas id="canvas">
 			this requires JavaScript :(
 		</canvas>
-		<audio src="Call-bell-ding.mp3" hidden="hidden" id="bell" />
+		<audio src="static/Call-bell-ding.mp3" hidden="hidden" id="bell" />
 	</body>
 </html>

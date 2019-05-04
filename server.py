@@ -12,11 +12,20 @@ users = {"U0ZFL9KA9" : "Connor", "U95EEL17H":"Chieco", "U0ZFZ0U1M":"Rushabh", "U
 
 app.config.from_object(__name__)
 
+@app.route('/', methods=['GET'])
+def homepage():
+    return render_template("index.html")
+
 @app.route('/', methods=['POST'])
 def printSup():
     jdata = request.get_json()
     print("the request: was received")
     try:
+        try:
+            challenge = jdata['challenge']
+            return challenge
+        except:
+            print("no challenge")
         event = jdata['event']
         print(event)
         #bwh is C0T96JKCY
@@ -38,37 +47,6 @@ def printSup():
         print("\nparse failed\n")
     #weird hack but ok
     return("adsfads")
-
-@app.route('/', defaults={'path': ''}, methods=['GET'])
-@app.route('/<path:path>', methods=['GET'])
-def get_resource(path):  # pragma: no cover
-    mimetypes = {
-            ".css": "text/css",
-            ".html": "text/html",
-            ".js": "application/javascript",
-            }
-    complete_path = os.path.join(root_dir(), path)
-    ext = os.path.splitext(path)[1]
-    mimetype = mimetypes.get(ext, "text/html")
-    content = get_file(complete_path)
-    #return(processrequest(request))
-    processrequest(request)
-    return Response(content, mimetype=mimetype)
-
-def root_dir():  # pragma: no cover
-    return os.path.abspath(os.path.dirname(__file__))
-
-def get_file(filename):  # pragma: no cover
-    try:
-        src = os.path.join(root_dir(), filename)
-            # Figure out how flask returns static files
-            # Tried:
-            # - render_template
-            # - send_file
-            # This should not be so non-obvious
-        return open(src).read()
-    except IOError as exc:
-        return str(exc)
 
 def processrequest(request):
     print("hey im python")
